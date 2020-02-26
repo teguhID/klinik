@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">		
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    
     {{-- <script src="{{asset('js/jquery.min.js')}}"></script> --}}
     <script src="{{asset('')}}js/jquery-3.4.1.min.js"></script>
     
@@ -21,37 +22,9 @@
                 <a class="img logo mb-5" style="background-image: url({{ asset('img/logo.png') }});"></a>
                 <ul class="list-unstyled components mb-5">
                     <li id="dashboardNav" class="">
-                        <a href="{{ url('/admin') }}">Dashboard</a>
+                        <a href="{{ url('/loginPetugas') }}">Antrian Pasien</a>
                     </li>
-                    <li id="dokterNav" class="">
-                        <a href="{{ url('/dokter') }}">Dokter</a>
-                    </li>
-                    <li id="penyakitNav" class="">
-                        <a href="{{ url('/penyakit') }}">Penyakit</a>
-                    </li>
-                    <li id="pasienNav" class="">
-                        <a href="{{ url('/pasien') }}">Pasien</a>
-                    </li>
-                    <li id="userNav" class="">
-                        <a href="{{ url('/user') }}">User</a>
-                    </li>
-                    <hr>
-                    {{-- <li>
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                <a href="#">Page 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Page 2</a>
-                            </li>
-                            <li>
-                                <a href="#">Page 3</a>
-                            </li>
-                        </ul>
-                    </li> --}}
                 </ul>
-
             </div>
         </nav>
 

@@ -1,35 +1,28 @@
-@extends('admin.layout.layout')
+@extends('dokter.layout.layout')
 
 @section('content')
-    <h2 class="mb-4">Input Obat & Penyakit
-        <a href="#" class="btn btn-success float-right" data-toggle="modal" data-target="#inputAntrianModal">Tambah Antrian</a>
-    </h2>
-    <form action="{{ url('/selesaiPengobatan/' . ) }}" method="POST">
+    <h2 class="mb-4">Input Obat & Penyakit</h2>
+    @foreach ($data as $datas)
+    <form action="{{ url('/selesaiBerobat/' . $datas->idAntrian) }}" method="POST">
         @csrf
-        <div class="modal-header">
-            <h5>Input Obat</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
         <div class="modal-body">
             <input type="hidden" class="form-control" id="idEdit" name="id">
             <div class="form-group">
                 <label>id Anggota</label>
-                <input type="text" class="form-control" id="idAnggota" disabled>
+                <input type="text" class="form-control" id="idAnggota" disabled value="{{ $datas->idAnggota }}">
             </div>
             <div class="form-group">
                 <label>Nama</label>
-                <input type="text" class="form-control" id="nama" disabled>
+                <input type="text" class="form-control" id="nama" disabled value="{{ $datas->namaAnggota }}">
             </div>
             <div class="form-group">
                 <label>Keluhan</label>
-                    <textarea class="form-control" id="keluhan" cols="30" rows="10"></textarea>
+                    <textarea class="form-control" id="keluhan" cols="30" rows="10" disabled>{{ $datas->keluhan }}</textarea>
                 </div>
             <div class="form-group">
             <div class="form-group">
                 <label>Obat</label>
-                    <input type="text" class="form-control" id="obat">
+                    <input type="text" class="form-control" id="obat" name="obat">
                 </div>
             <div class="form-group">
             <label>Penyakit</label>
@@ -39,11 +32,11 @@
                 @endforeach
             </select>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="submit" id="antrianUpdate" data-dismiss="modal" class="btn btn-info">Submit</button>
-        </div>
+        <br>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" id="antrianUpdate" data-dismiss="modal" class="btn btn-info">Submit</button>
     </form>
+    @endforeach
     <script>
         $(document).ready(function(){
             $("#dashboardNav").removeClass("active");

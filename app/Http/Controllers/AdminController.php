@@ -18,10 +18,61 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    // ================================== LOGIN AUTH ================================== //
+    public function LoginAdmin()
     {
-        return view('admin.dashboard');
+        $jumlahDokter = DokterModel::all()->count();
+        $jumlahPenyakit = PenyakitModel::all()->count();
+        $jumlahAnggota = AnggotaModel::all()->count();
+        $pasienMasukToday = AntrianModel::whereDate('created_at', date('Y-m-d'))->get()->count();
+        $pasienMasukAll = AntrianModel::all()->count();
+        $data = [
+            'jumlahDokter'  => $jumlahDokter,
+            'jumlahPenyakit'   => $jumlahPenyakit,
+            'jumlahAnggota'  => $jumlahAnggota,
+            'pasienMasukToday'   => $pasienMasukToday,
+            'pasienMasukAll'   => $pasienMasukAll,
+        ];
+        return view('admin.dashboard')->with($data);
     }
+
+    public function LoginDokter()
+    {
+        $date = date("Y-m-d");
+        $data = DB::table('tabel_antrian')->join('tabel_anggota', 'tabel_antrian.idAnggota', '=', 'tabel_anggota.idAnggota')
+                                          ->join('tabel_dokter', 'tabel_antrian.idDokter', '=', 'tabel_dokter.idDokter')
+                                          ->select('tabel_antrian.*', 'tabel_anggota.*', 'tabel_dokter.nama')
+                                          ->whereDate('tabel_antrian.created_at', '=', $date)
+                                          ->where('tabel_antrian.status', 'dalam proses pengobatan')
+                                          ->get();
+        $penyakit = PenyakitModel::all();
+
+        $passData = [
+            'data'  => $data,
+            'penyakit'   => $penyakit,
+        ];
+        return view('dokter.dashboard')->with($passData);
+    }
+
+    public function LoginPetugas()
+    {
+        $date = date("Y-m-d");
+        $data = DB::table('tabel_antrian')->join('tabel_anggota', 'tabel_antrian.idAnggota', '=', 'tabel_anggota.idAnggota')
+                                          ->join('tabel_dokter', 'tabel_antrian.idDokter', '=', 'tabel_dokter.idDokter')
+                                          ->select('tabel_antrian.*', 'tabel_anggota.*', 'tabel_dokter.nama')
+                                          ->whereDate('tabel_antrian.created_at', '=', $date)
+                                          ->where('tabel_antrian.status', 'dalam antrian')
+                                          ->orWhere('tabel_antrian.status', 'selesai berobat')
+                                          ->get();
+        $penyakit = PenyakitModel::all();
+
+        $passData = [
+            'data'  => $data,
+            'penyakit'   => $penyakit,
+        ];
+        return view('petugas.dashboard')->with($passData);
+    }
+    // ================================== LOGIN AUTH ================================== //
 
     // ================================== DOKTER ================================== //
     public function DataDokter()
@@ -176,39 +227,35 @@ class AdminController extends Controller
     // ================================== Pasien ================================== //
 
     // ================================== Antrian Pasien ================================== //
-    public function AntrianPasien()
+    
+    public function ProsesPengobatan($idAntrian)
     {
-        $date = date("Y-m-d");
+        AntrianModel::where('idAntrian', $idAntrian)->update(['status'=>'dalam proses pengobatan']);
+        return redirect('admin');
+    }
+    public function InputObat($idAntrian)
+    {
+        $penyakit = PenyakitModel::all();
         $data = DB::table('tabel_antrian')->join('tabel_anggota', 'tabel_antrian.idAnggota', '=', 'tabel_anggota.idAnggota')
                                           ->join('tabel_dokter', 'tabel_antrian.idDokter', '=', 'tabel_dokter.idDokter')
                                           ->select('tabel_antrian.*', 'tabel_anggota.*', 'tabel_dokter.nama')
-                                          ->whereDate('tabel_antrian.created_at', '=', $date)
+                                          ->where('tabel_antrian.idAntrian', $idAntrian)
                                           ->get();
-        $penyakit = PenyakitModel::all();
-
         $passData = [
             'data'  => $data,
             'penyakit'   => $penyakit,
         ];
-
-        return view('admin.antrianPasien.antrianPasien')->with($passData);
-    }
-    
-    public function ProsesPengobatan($idAnggota)
-    {
-        AntrianModel::where('idAnggota', $idAnggota)->update(['status'=>'dalam proses pengobatan']);
-        return redirect('antrianPasien');
+        return view('dokter.inputObat')->with($passData);
     }
 
-    public function InputObat($idAnggota)
+    public function SelesaiBerobat($idAntrian, Request $req)
     {
-        $data = AntrianModel::where('idAnggota', $InputObat)->get();
-        return view('admin.antrianPasien.inputObat')->with('data', $data);
-    }
-    public function DeleteDataAntrian($id)
-    {
-        AnggotaModel::where('idAnggota', $id)->delete();
-        return 'ok';
+        AntrianModel::where('idAntrian', $idAntrian)->update([
+            'obat' => $req->obat,
+            'penyakit' => $req->penyakit,
+            'status' => 'selesai berobat',
+        ]);
+        return redirect('/loginDokter');
     }
 
 }

@@ -30,8 +30,6 @@
                 class="collapse navbar-collapse" id="navcol-1">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item" role="presentation"><a class="nav-link active" href="{{ url('/') }}">Home</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Tentang</a></li>
-                    <li class="nav-item" role="presentation"><a class="nav-link" href="index.html">Gallery</a></li>
                     <li class="nav-item" role="presentation"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                 </ul>
         </div>

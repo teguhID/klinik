@@ -101,6 +101,7 @@ class UserController extends Controller
                                           ->join('tabel_dokter', 'tabel_antrian.idDokter', '=', 'tabel_dokter.idDokter')
                                           ->select('tabel_antrian.*', 'tabel_anggota.*', 'tabel_dokter.nama')
                                           ->whereDate('tabel_antrian.created_at', '=', $date)
+                                          ->where('tabel_antrian.status', 'dalam antrian')
                                           ->get();
         return view('user.antrian')->with('data', $data);
     }

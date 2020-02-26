@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -26,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    public $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -43,11 +44,28 @@ class LoginController extends Controller
         return 'username';
     }
 
-    public function authenticate()
-    {
-        if (Auth::attempt(['username' => $username, 'password' => $password])) {
-            // Authentication passed...
-            return redirect()->intended('admin');
+    public function login(Request $request)
+    {   
+        $input = $request->all();
+   
+        if(auth()->attempt(array('username' => $input['username'], 'password' => $input['password'])))
+        {
+            if(auth()->user()->status == "Admin"){
+                return redirect('loginAdmin');
+            }
+            else if(auth()->user()->status == "Dokter"){
+                return redirect('loginDokter');
+            }
+            else if(auth()->user()->status == "Petugas"){
+                return redirect('loginPetugas');
+            }
+            else{
+                return 'asd';
+            }
+        }else{
+            return redirect('/login')
+                ->with('error','Email-Address And Password Are Wrong.');
         }
+          
     }
 }

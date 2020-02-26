@@ -27,7 +27,24 @@ Route::get('/antrian', 'UserController@Antrian');
 Route::get('/listAnggotaAutocomplete', 'UserController@ListAnggotaAutocomplete');
 
 //Admin
-Route::get('/admin', 'AdminController@index');
+Route::get('/admin', function ()
+{
+    if(auth()->user()->status == "Admin"){
+        return redirect('loginAdmin');
+    }
+    else if(auth()->user()->status == "Dokter"){
+        return redirect('loginDokter');
+    }
+    else if(auth()->user()->status == "Petugas"){
+        return redirect('loginPetugas');
+    }
+    else{
+        return 'asd';
+    }
+});
+Route::get('/loginAdmin', 'AdminController@LoginAdmin');
+Route::get('/loginDokter', 'AdminController@LoginDokter');
+Route::get('/loginPetugas', 'AdminController@LoginPetugas');
 
 //User
 Route::get('/user', 'AdminController@User');
@@ -61,7 +78,6 @@ Route::post('/deleteDokter/{idDokter}', 'AdminController@DeleteDokter');
 Route::get('/statusDokter/{idDokter}', 'AdminController@StatusDokter');
 
 //AntrianPasien
-Route::get('/antrianPasien', 'AdminController@AntrianPasien');
-Route::get('/getDataAntrianPasien', 'AdminController@GetDataAntrianPasien');
 Route::get('/prosesPengobatan/{idAnggota}', 'AdminController@ProsesPengobatan');
-Route::get('/inputObat/{idAnggota}', 'AdminController@InputObat');
+Route::get('/inputObat/{idAntrian}', 'AdminController@InputObat');
+Route::post('/selesaiBerobat/{idAntrian}', 'AdminController@SelesaiBerobat');
